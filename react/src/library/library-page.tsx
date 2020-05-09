@@ -3,6 +3,7 @@ import BookList from "./book-list";
 import { Book } from "./models";
 import { fetchBooksList } from "./services/books-query";
 import { QueryResult } from "./services/models";
+import AddBookForm from "./add-book-form";
 
 const BooksPage = () => (
   <BooksPageContainer booksQuery={fetchBooksList} />
@@ -15,6 +16,7 @@ interface BooksPageContainerProps {
 export const BooksPageContainer: React.FC<BooksPageContainerProps> = (
   props: BooksPageContainerProps
 ) => {
+  const [isAddNewBook, setAddNewBook] = useState(false);
   const [title, setTitle] = useState("");
   const [books, setBooks] = useState("loading" as QueryResult<Book[]>);
 
@@ -23,9 +25,16 @@ export const BooksPageContainer: React.FC<BooksPageContainerProps> = (
   return (
     <main>
       <section role="heading" className="title">
-        {title}
+        <button
+          onClick={() => setAddNewBook(true)}
+          title="Add new book to library">+</button> {title}
       </section>
-      <section id="services">
+      {isAddNewBook &&
+        <section title="Add new book">
+          <AddBookForm addNew={(b) => console.log(b)} cancel={() => setAddNewBook(false)} />
+        </section>
+      }
+      <section id="books">
         <BookListWithLoader
           services={books}
           setSelected={s => setTitle(s.name)}
